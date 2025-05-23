@@ -38,6 +38,16 @@ template <PluginContext PluginContextType> class ModuleRegistry
     }
 
     /**
+     * Unregister a module.
+     */
+    void unregisterModule(const std::string &module_name)
+    {
+        std::erase_if(m_modules, [&module_name](const auto &module) {
+            return module->getName() == module_name;
+        });
+    }
+
+    /**
      * Returns the list of registered modules.
      */
     ModuleList<PluginContextType> &getRegisteredModules()
