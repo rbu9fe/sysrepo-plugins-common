@@ -1,12 +1,12 @@
 #pragma once
 
-#include "libyang-cpp/DataNode.hpp"
 #include <string>
 #include <map>
 
 #include <libyang-cpp/Context.hpp>
+#include <libyang-cpp/DataNode.hpp>
 
-#include <sysrepo-cpp/Session.hpp>
+#include <sysrepo-cpp/sysrepo-wrapper.hpp>
 
 #include "module.hpp"
 #include "context.hpp"
@@ -61,7 +61,7 @@ std::map<std::string, std::string> getMetaValuesHash(const ly::MetaCollection me
  *
  */
 template <PluginContext PluginContextType>
-void registerOperationalSubscriptions(sysrepo::Session &sess, PluginContextType &ctx,
+void registerOperationalSubscriptions(Sysrepo::Session &sess, PluginContextType &ctx,
                                       std::unique_ptr<srpc::IModule<PluginContextType>> &mod)
 {
     const auto oper_callbacks = mod->getOperationalCallbacks();
@@ -73,11 +73,11 @@ void registerOperationalSubscriptions(sysrepo::Session &sess, PluginContextType 
         SRPLG_LOG_INF(ctx.getPluginName(), "Creating operational subscription for xpath %s", cb.XPath.c_str());
         if (sub_handle.has_value())
         {
-            sub_handle->onOperGet(cb.Module, cb.Callback, cb.XPath);
+            sub_handle->onOperGet(cb.Module, cb.Callback, cb.XPath, cb.opts);
         }
         else
         {
-            sub_handle = sess.onOperGet(cb.Module, cb.Callback, cb.XPath);
+            sub_handle.emplace(sess.onOperGet(cb.Module, cb.Callback, cb.XPath, cb.opts));
         }
     }
 }
@@ -91,7 +91,7 @@ void registerOperationalSubscriptions(sysrepo::Session &sess, PluginContextType 
  *
  */
 template <PluginContext PluginContextType>
-void registerModuleChangeSubscriptions(sysrepo::Session &sess, PluginContextType &ctx,
+void registerModuleChangeSubscriptions(Sysrepo::Session &sess, PluginContextType &ctx,
                                        std::unique_ptr<srpc::IModule<PluginContextType>> &mod)
 {
     const auto change_callbacks = mod->getModuleChangeCallbacks();
@@ -103,11 +103,11 @@ void registerModuleChangeSubscriptions(sysrepo::Session &sess, PluginContextType
         SRPLG_LOG_INF(ctx.getPluginName(), "Creating module change subscription for xpath %s", cb.XPath.c_str());
         if (sub_handle.has_value())
         {
-            sub_handle->onModuleChange(cb.Module, cb.Callback, cb.XPath);
+            sub_handle->onModuleChange(cb.Module, cb.Callback, cb.XPath, cb.priority, cb.opts);
         }
         else
         {
-            sub_handle = sess.onModuleChange(cb.Module, cb.Callback, cb.XPath);
+            sub_handle.emplace(sess.onModuleChange(cb.Module, cb.Callback, cb.XPath, cb.priority, cb.opts));
         }
     }
 }
@@ -121,7 +121,7 @@ void registerModuleChangeSubscriptions(sysrepo::Session &sess, PluginContextType
  *
  */
 template <PluginContext PluginContextType>
-void registerRpcSubscriptions(sysrepo::Session &sess, PluginContextType &ctx,
+void registerRpcSubscriptions(Sysrepo::Session &sess, PluginContextType &ctx,
                               std::unique_ptr<srpc::IModule<PluginContextType>> &mod)
 {
     const auto rpc_callbacks = mod->getRpcCallbacks();
@@ -133,11 +133,11 @@ void registerRpcSubscriptions(sysrepo::Session &sess, PluginContextType &ctx,
         SRPLG_LOG_INF(ctx.getPluginName(), "Creating RPC subscription for xpath %s", cb.XPath.c_str());
         if (sub_handle.has_value())
         {
-            sub_handle->onRPCAction(cb.XPath, cb.Callback);
+            sub_handle->onRPCAction(cb.XPath, cb.Callback, cb.priority, cb.opts);
         }
         else
         {
-            sub_handle = sess.onRPCAction(cb.XPath, cb.Callback);
+            sub_handle.emplace(sess.onRPCAction(cb.XPath, cb.Callback, cb.priority, cb.opts));
         }
     }
 }

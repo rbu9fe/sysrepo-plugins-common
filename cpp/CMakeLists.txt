@@ -22,22 +22,18 @@ SET(
     SRPCPP_SOURCES
 
     src/srpcpp/common.cpp
-    src/srpcpp/context.cpp
 )
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../CMakeModules")
-find_package(LIBYANG REQUIRED)
+find_package(LibYANG REQUIRED)
 find_package(SYSREPO REQUIRED)
-find_package(SYSREPOCPP REQUIRED)
-find_package(LIBYANGCPP REQUIRED)
+find_package(SYSREPO-CPP REQUIRED)
+find_package(LIBYANG-CPP REQUIRED)
 
 include_directories(src)
-include_directories(${LIBYANG_INCLUDE_DIRS})
-include_directories(${SYSREPO_INCLUDE_DIRS})
-include_directories(${LIBYANGCPP_INCLUDE_DIRS})
-include_directories(${SYSREPOCPP_INCLUDE_DIRS})
 
 add_library(${PROJECT_NAME} SHARED ${SRPCPP_SOURCES})
+target_link_libraries(${PROJECT_NAME} libyang::libyang sysrepo::sysrepo libyang-cpp::libyang-cpp sysrepo-cpp::sysrepo-cpp)
 
 # project version
 set_target_properties(

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <sysrepo-cpp/Session.hpp>
-#include <sysrepo-cpp/Connection.hpp>
+#include <sysrepo-cpp/sysrepo-wrapper.hpp>
 
 namespace srpc
 {
@@ -18,7 +17,9 @@ class BasePluginContext
      * @param sess Plugin session from the plugin init callback.
      *
      */
-    BasePluginContext(sysrepo::Session sess);
+    BasePluginContext(const std::shared_ptr<Sysrepo::Session>& sess) : m_sess(sess)
+    {
+    }
 
     /**
      * @brief Get the session by which the plugin was created.
@@ -26,15 +27,10 @@ class BasePluginContext
      * @return Plugin session from the init callback.
      *
      */
-    sysrepo::Session &getSession();
-
-    /**
-     * @brief Get the sysrepo connection.
-     *
-     * @return Connection to sysrepo.
-     *
-     */
-    sysrepo::Connection getConnection();
+    Sysrepo::Session &getSession()
+    {
+        return *m_sess;
+    }
 
     /**
      * @brief Get the subscription handle.
@@ -42,7 +38,10 @@ class BasePluginContext
      * @return Subscription handle.
      *
      */
-    std::optional<sysrepo::Subscription> &getSubscriptionHandle();
+    std::optional<Sysrepo::Subscription> &getSubscriptionHandle()
+    {
+        return m_subHandle;
+    }
 
     /**
      * @brief Get the name of the plugin which uses this context.
@@ -54,13 +53,13 @@ class BasePluginContext
     /**
      * sysrepo-plugin-generator: Generated default destructor for plugin context.
      */
-    ~BasePluginContext()
+    virtual ~BasePluginContext()
     {
     }
 
   private:
-    sysrepo::Session m_sess; ///< Plugin session from the plugin init callback.
-    std::optional<sysrepo::Subscription>
+    std::shared_ptr<Sysrepo::Session> m_sess; ///< Plugin session from the plugin init callback.
+    std::optional<Sysrepo::Subscription>
         m_subHandle; ///< Subscription handle used for creating subscriptions (change, oper and RPC).
 };
 

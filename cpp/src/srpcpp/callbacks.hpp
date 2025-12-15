@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <sysrepo-cpp/Session.hpp>
+#include <sysrepo-cpp/sysrepo-wrapper.hpp>
 
 namespace srpc
 {
@@ -10,9 +10,10 @@ namespace srpc
  */
 struct OperationalCallback
 {
-    std::string Module;          ///< Module for the callback.
-    std::string XPath;           ///< XPath of the data.
-    sysrepo::OperGetCb Callback; ///< Callback function.
+    std::string Module;                                                    ///< Module for the callback.
+    std::string XPath;                                                     ///< XPath of the data.
+    Sysrepo::OperGetCb Callback;                                           ///< Callback function.
+    sysrepo::SubscribeOptions opts = sysrepo::SubscribeOptions::OperMerge; ///< Subscription options.
 };
 
 /**
@@ -20,9 +21,11 @@ struct OperationalCallback
  */
 struct ModuleChangeCallback
 {
-    std::string Module;               ///< Module for the callback.
-    std::string XPath;                ///< XPath of the data.
-    sysrepo::ModuleChangeCb Callback; ///< Callback function.
+    std::string Module;                                                  ///< Module for the callback.
+    std::string XPath;                                                   ///< XPath of the data.
+    Sysrepo::ModuleChangeCb Callback;                                    ///< Callback function.
+    uint32_t priority = 0;                                               ///< Priority.
+    sysrepo::SubscribeOptions opts = sysrepo::SubscribeOptions::Default; ///< Subscription options.
 };
 
 /**
@@ -30,7 +33,9 @@ struct ModuleChangeCallback
  */
 struct RpcCallback
 {
-    std::string XPath;             ///< XPath of the data.
-    sysrepo::RpcActionCb Callback; ///< Callback function.
+    std::string XPath;                                                   ///< XPath of the data.
+    Sysrepo::RpcActionCb Callback;                                       ///< Callback function.
+    uint32_t priority = 0;                                               ///< Priority.
+    sysrepo::SubscribeOptions opts = sysrepo::SubscribeOptions::Default; ///< Subscription options.
 };
 } // namespace srpc
