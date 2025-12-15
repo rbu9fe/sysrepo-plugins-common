@@ -1,6 +1,7 @@
 #pragma once
 
-#include <sysrepo-cpp/sysrepo-wrapper.hpp>
+#include <sysrepo-cpp/Connection.hpp>
+#include <sysrepo-cpp/Session.hpp>
 
 namespace srpc
 {
@@ -17,7 +18,7 @@ class BasePluginContext
      * @param sess Plugin session from the plugin init callback.
      *
      */
-    BasePluginContext(const std::shared_ptr<Sysrepo::Session>& sess) : m_sess(sess)
+    BasePluginContext(sysrepo::Session sess) : m_sess(sess)
     {
     }
 
@@ -27,9 +28,9 @@ class BasePluginContext
      * @return Plugin session from the init callback.
      *
      */
-    Sysrepo::Session &getSession()
+    sysrepo::Session getSession()
     {
-        return *m_sess;
+        return m_sess;
     }
 
     /**
@@ -38,7 +39,7 @@ class BasePluginContext
      * @return Subscription handle.
      *
      */
-    std::optional<Sysrepo::Subscription> &getSubscriptionHandle()
+    std::optional<sysrepo::Subscription> &getSubscriptionHandle()
     {
         return m_subHandle;
     }
@@ -58,8 +59,8 @@ class BasePluginContext
     }
 
   private:
-    std::shared_ptr<Sysrepo::Session> m_sess; ///< Plugin session from the plugin init callback.
-    std::optional<Sysrepo::Subscription>
+    sysrepo::Session m_sess; ///< Plugin session from the plugin init callback.
+    std::optional<sysrepo::Subscription>
         m_subHandle; ///< Subscription handle used for creating subscriptions (change, oper and RPC).
 };
 

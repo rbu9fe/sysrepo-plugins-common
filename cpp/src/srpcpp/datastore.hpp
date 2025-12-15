@@ -28,7 +28,7 @@ class IDatastoreInitializer : public IAssignedPaths
      *
      * @param session Session to use for retreiving datastore data.
      */
-    virtual void initializeDatastore(Sysrepo::Session &session) = 0;
+    virtual void initializeDatastore(sysrepo::Session session) = 0;
 };
 
 /**
@@ -42,7 +42,7 @@ class IDatastoreApplier : public IAssignedPaths
      *
      * @param session Session to use for retreiving datastore data.
      */
-    virtual void applyDatastoreValues(Sysrepo::Session &session) = 0;
+    virtual void applyDatastoreValues(sysrepo::Session session) = 0;
 };
 
 /**
@@ -70,7 +70,7 @@ class IDatastoreChecker : public IAssignedPaths
      *
      * @return Enum describing the output of values comparison.
      */
-    virtual DatastoreValuesCheckStatus checkDatastoreValues(Sysrepo::Session &session) = 0;
+    virtual DatastoreValuesCheckStatus checkDatastoreValues(sysrepo::Session session) = 0;
 };
 
 /**

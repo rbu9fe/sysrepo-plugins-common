@@ -6,7 +6,7 @@
 #include <libyang-cpp/Context.hpp>
 #include <libyang-cpp/DataNode.hpp>
 
-#include <sysrepo-cpp/sysrepo-wrapper.hpp>
+#include <sysrepo-cpp/Session.hpp>
 
 #include "module.hpp"
 #include "context.hpp"
@@ -61,7 +61,7 @@ std::map<std::string, std::string> getMetaValuesHash(const ly::MetaCollection me
  *
  */
 template <PluginContext PluginContextType>
-void registerOperationalSubscriptions(Sysrepo::Session &sess, PluginContextType &ctx,
+void registerOperationalSubscriptions(sysrepo::Session sess, PluginContextType &ctx,
                                       std::unique_ptr<srpc::IModule<PluginContextType>> &mod)
 {
     const auto oper_callbacks = mod->getOperationalCallbacks();
@@ -91,7 +91,7 @@ void registerOperationalSubscriptions(Sysrepo::Session &sess, PluginContextType 
  *
  */
 template <PluginContext PluginContextType>
-void registerModuleChangeSubscriptions(Sysrepo::Session &sess, PluginContextType &ctx,
+void registerModuleChangeSubscriptions(sysrepo::Session sess, PluginContextType &ctx,
                                        std::unique_ptr<srpc::IModule<PluginContextType>> &mod)
 {
     const auto change_callbacks = mod->getModuleChangeCallbacks();
@@ -121,7 +121,7 @@ void registerModuleChangeSubscriptions(Sysrepo::Session &sess, PluginContextType
  *
  */
 template <PluginContext PluginContextType>
-void registerRpcSubscriptions(Sysrepo::Session &sess, PluginContextType &ctx,
+void registerRpcSubscriptions(sysrepo::Session sess, PluginContextType &ctx,
                               std::unique_ptr<srpc::IModule<PluginContextType>> &mod)
 {
     const auto rpc_callbacks = mod->getRpcCallbacks();
