@@ -18,36 +18,6 @@ project(srpcpp VERSION 0.1.0)
 include(GNUInstallDirs)
 set(CMAKE_CXX_STANDARD 20)
 
-SET(
-    SRPCPP_SOURCES
-
-    src/srpcpp/common.cpp
-)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../CMakeModules")
-find_package(LibYANG REQUIRED)
-find_package(SYSREPO REQUIRED)
-find_package(SYSREPO-CPP REQUIRED)
-find_package(LIBYANG-CPP REQUIRED)
-
-include_directories(src)
-
-add_library(${PROJECT_NAME} SHARED ${SRPCPP_SOURCES})
-target_link_libraries(${PROJECT_NAME} libyang::libyang sysrepo::sysrepo libyang-cpp::libyang-cpp sysrepo-cpp::sysrepo-cpp)
-
-# project version
-set_target_properties(
-    ${PROJECT_NAME}
-    PROPERTIES
-    VERSION ${PROJECT_VERSION}
-    SOVERSION ${PROJECT_VERSION_MAJOR}
-)
-
-install(
-    TARGETS ${PROJECT_NAME}
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-
 install(
     FILES ${PROJECT_SOURCE_DIR}/src/srpcpp.hpp
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
