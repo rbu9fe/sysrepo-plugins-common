@@ -6,7 +6,7 @@ namespace srpc
 {
 class IAssignedPaths
 {
-  public:
+public:
     /**
      * @brief Get the paths which the initializer/checker/applier is assigned for.
      *
@@ -20,7 +20,7 @@ class IAssignedPaths
  */
 class IDatastoreInitializer : public IAssignedPaths
 {
-  public:
+public:
     /**
      * @brief Initialize datastore content using the provided session.
      *
@@ -28,7 +28,12 @@ class IDatastoreInitializer : public IAssignedPaths
      *
      * @param session Session to use for retreiving datastore data.
      */
-    virtual void initializeDatastore(sysrepo::Session session) = 0;
+    virtual void initializeDatastore( sysrepo::Session session ) = 0;
+
+    /**
+     * @brief Get the datastaore this initializer is registered for.
+     */
+    virtual sysrepo::Datastore getDatastore() = 0;
 };
 
 /**
@@ -36,13 +41,13 @@ class IDatastoreInitializer : public IAssignedPaths
  */
 class IDatastoreApplier : public IAssignedPaths
 {
-  public:
+public:
     /**
      * @brief Apply datastore content from the provided session to the system.
      *
      * @param session Session to use for retreiving datastore data.
      */
-    virtual void applyDatastoreValues(sysrepo::Session session) = 0;
+    virtual void applyDatastoreValues( sysrepo::Session session ) = 0;
 };
 
 /**
@@ -62,7 +67,7 @@ enum class DatastoreValuesCheckStatus
  */
 class IDatastoreChecker : public IAssignedPaths
 {
-  public:
+public:
     /**
      * @brief Check for the datastore values on the system.
      *
@@ -70,24 +75,24 @@ class IDatastoreChecker : public IAssignedPaths
      *
      * @return Enum describing the output of values comparison.
      */
-    virtual DatastoreValuesCheckStatus checkDatastoreValues(sysrepo::Session session) = 0;
+    virtual DatastoreValuesCheckStatus checkDatastoreValues( sysrepo::Session session ) = 0;
 };
 
 /**
  * @brief Datastore initializer concept for determining a valid datastore initializer.
  */
-template <typename T>
+template<typename T>
 concept DatastoreValueInitializer = std::is_base_of<IDatastoreInitializer, T>::value;
 
 /**
  * @brief Datastore applier concept for determining a valid datastore applier.
  */
-template <typename T>
+template<typename T>
 concept DatastoreValueApplier = std::is_base_of<IDatastoreApplier, T>::value;
 
 /**
  * @brief Datastore checker concept for determining a valid datastore checker.
  */
-template <typename T>
+template<typename T>
 concept DatastoreValueChecker = std::is_base_of<IDatastoreChecker, T>::value;
 } // namespace srpc
